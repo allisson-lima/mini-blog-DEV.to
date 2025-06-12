@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(<"$COMMIT_MSG_FILE")
+
+# Expressão regular para Conventional Commits compatível com Bash
+CONVENTIONAL_COMMIT_REGEX="^(feat|fix|docs|style|refactor|test|chore|build|ci|perf|revert)(\([a-zA-Z0-9_.-]+\))?(!)?: .+"
+
+if [[ ! "$COMMIT_MSG" =~ $CONVENTIONAL_COMMIT_REGEX ]]; then
+  echo
+  echo "❌ ERRO: A mensagem de commit não segue o formato do Conventional Commits."
+  echo
+  echo "✅ Formato correto:"
+  echo "  <tipo>(<escopo opcional>): <descrição>"
+  echo
+  echo "📚 Tipos permitidos:"
+  echo "  feat:     Uma nova funcionalidade."
+  echo "  fix:      Correção de um bug."
+  echo "  docs:     Alterações na documentação."
+  echo "  style:    Estilo de código (espaços, ponto-e-vírgula, etc.)"
+  echo "  refactor: Refatoração sem mudança de comportamento."
+  echo "  test:     Inclusão/modificação de testes."
+  echo "  chore:    Tarefas administrativas (build, deps)."
+  echo "  build:    Alterações em processos de build ou dependências."
+  echo "  ci:       Integração contínua."
+  echo "  perf:     Melhorias de performance."
+  echo "  revert:   Reverte um commit."
+  echo
+  echo "📌 Exemplos válidos:"
+  echo "  feat(auth): adicionar login com Google"
+  echo "  fix(api)!: corrigir bug de timeout"
+  echo "  docs(readme): atualizar instruções"
+  echo
+
+  exit 1
+fi
+
+exit 0

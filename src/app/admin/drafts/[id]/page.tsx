@@ -1,17 +1,18 @@
-import { PostEditor } from "@/components/editor/post-editor";
+import { PostEditor } from '@/components/editor/post-editor'
 
 interface EditDraftPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{
+    id: string
+  }>
 }
 
-export default function EditDraftPage({ params }: EditDraftPageProps) {
+export default async function EditDraftPage({ params }: EditDraftPageProps) {
+  const { id } = await params
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <main className="container py-8">
-        <PostEditor draftId={params.id} />
+        <PostEditor draftId={id} />
       </main>
     </div>
-  );
+  )
 }

@@ -1,0 +1,5 @@
+echo 'Check for linting errors...'
+npm run pre-commit || 
+(echo 'Linting errors or tests failed. Please fix them before commiting.' && exit 1)
+
+echo 'Done'
