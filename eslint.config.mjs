@@ -11,7 +11,7 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", 'plugin:prettier/recommended'),
+  ...compat.extends("next/core-web-vitals", "next/typescript", 'eslint:recommended', 'plugin:prettier/recommended', 'prettier'),
   {
     ignores: [
       '**/node_modules/*',
@@ -33,6 +33,8 @@ const eslintConfig = [
   },
   {
     rules: {
+      'react/no-unescaped-entities': 'off',
+      '@next/next/no-page-custom-font': 'off',
       '@typescript-eslint/no-unused-vars': [
         2,
         {
