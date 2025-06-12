@@ -1,0 +1,4 @@
+echo 'Running pre-push checks and Build...'
+echo 'Check for linting errors and run tests...'
+npm run pre-push || 
+(echo 'Linting errors or tests failed. Please fix them before pushing.' && exit 1)
