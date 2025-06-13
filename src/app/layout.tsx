@@ -1,23 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { Providers } from "@/providers";
-import { Toaster } from "@/components/ui/sonner";
-import { Layout } from "@/components/layout";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import './globals.css';
+import { Providers } from '@/providers';
+import { Toaster } from '@/components/ui/sonner';
+import { Layout } from '@/components/layout';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "DevBlog - Mini CMS",
-  description: "Um mini-blog/CMS moderno construído com Next.js 15",
+  title: 'DevBlog - Mini CMS',
+  description: 'Um mini-blog/CMS moderno construído com Next.js 15',
 };
 
 export default function RootLayout({
@@ -31,10 +31,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Providers>
-          <Layout>{children}</Layout>
-        </Providers>
-        <Toaster />
+        <main>
+          <Providers>
+            <Layout>{children}</Layout>
+          </Providers>
+          <Toaster />
+        </main>
       </body>
     </html>
   );
