@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
-
-export const runtime = 'edge';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 export const alt =
   'DevBlog - Compartilhe conhecimento, inspire desenvolvedores';
@@ -11,13 +11,13 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  const interRegular = await fetch(
-    new URL('../../public/fonts/Inter-Regular.ttf', import.meta.url),
-  ).then((res) => res.arrayBuffer());
+  const interRegular = await readFile(
+    join(process.cwd(), '/public/fonts/Inter-Regular.ttf'),
+  );
 
-  const interBold = await fetch(
-    new URL('../../public/fonts/Inter-Bold.ttf', import.meta.url),
-  ).then((res) => res.arrayBuffer());
+  const interBold = await readFile(
+    join(process.cwd(), '/public/fonts/Inter-Bold.ttf'),
+  );
 
   return new ImageResponse(
     (
