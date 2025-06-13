@@ -1,6 +1,6 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,46 +14,46 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends(
-    "next/core-web-vitals",
-    "next/typescript",
-    "plugin:prettier/recommended",
-    "prettier"
+    'next/core-web-vitals',
+    'next/typescript',
+    'plugin:prettier/recommended',
+    'prettier',
   ),
   {
     ignores: [
-      "**/node_modules/*",
-      "**/out/*",
-      "**/.next/*",
-      "**/coverage",
-      "src/styles/globals.css",
-      ".next",
-      ".cache",
-      "package-lock.json",
-      "yarn.lock",
-      "pnpm-lock.yaml",
-      "public",
-      "next.config.js",
-      "next.config.ts",
-      "next-env.d.ts",
-      "tsconfig.json",
+      '**/node_modules/*',
+      '**/out/*',
+      '**/.next/*',
+      '**/coverage',
+      'src/styles/globals.css',
+      '.next',
+      '.cache',
+      'package-lock.json',
+      'yarn.lock',
+      'pnpm-lock.yaml',
+      'public',
+      'next.config.js',
+      'next.config.ts',
+      'next-env.d.ts',
+      'tsconfig.json',
     ],
   },
   {
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars-experimental": "off",
-      "react/no-unescaped-entities": "off",
-      "@next/next/no-page-custom-font": "off",
-      "@typescript-eslint/no-unused-vars": [
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars-experimental': 'off',
+      'react/no-unescaped-entities': 'off',
+      '@next/next/no-page-custom-font': 'off',
+      '@typescript-eslint/no-unused-vars': [
         2,
         {
-          argsIgnorePattern: "^_",
+          argsIgnorePattern: '^_',
         },
       ],
-      "no-console": [
+      'no-console': [
         2,
         {
-          allow: ["warn", "error"],
+          allow: ['warn', 'error'],
         },
       ],
     },

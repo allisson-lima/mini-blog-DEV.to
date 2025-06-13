@@ -1,13 +1,13 @@
-import { Article } from "@/types/article";
+import { Article } from '@/types/article';
 
 export function normalizeTags(
-  tagList: string | string[] | undefined
+  tagList: string | string[] | undefined,
 ): string[] {
   if (!tagList) return [];
 
-  if (typeof tagList === "string") {
+  if (typeof tagList === 'string') {
     return tagList
-      .split(",")
+      .split(',')
       .map((tag) => tag.trim())
       .filter(Boolean);
   }

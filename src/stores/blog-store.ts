@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { Article, Draft, Comment } from "@/types/article";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { Article, Draft, Comment } from '@/types/article';
 
 interface BlogState {
   articles: Article[];
@@ -15,7 +15,7 @@ interface BlogState {
   setArticles: (articles: Article[]) => void;
   setCurrentArticle: (article: Article | null) => void;
   setArticlesLoading: (loading: boolean) => void;
-  addDraft: (draft: Omit<Draft, "id" | "created_at" | "updated_at">) => void;
+  addDraft: (draft: Omit<Draft, 'id' | 'created_at' | 'updated_at'>) => void;
   updateDraft: (id: string, draft: Partial<Draft>) => void;
   deleteDraft: (id: string) => void;
   setCurrentDraft: (draft: Draft | null) => void;
@@ -38,7 +38,7 @@ export const useBlogStore = create<BlogState>()(
       currentDraft: null,
       comments: {},
       selectedTags: [],
-      searchQuery: "",
+      searchQuery: '',
       currentPage: 1,
       setArticles: (articles) => set({ articles }),
       setCurrentArticle: (article) => set({ currentArticle: article }),
@@ -58,7 +58,7 @@ export const useBlogStore = create<BlogState>()(
           drafts: state.drafts.map((draft) =>
             draft.id === id
               ? { ...draft, ...updates, updated_at: new Date().toISOString() }
-              : draft
+              : draft,
           ),
         }));
       },
@@ -96,14 +96,14 @@ export const useBlogStore = create<BlogState>()(
       setSearchQuery: (query) => set({ searchQuery: query, currentPage: 1 }),
       setCurrentPage: (page) => set({ currentPage: page }),
       clearFilters: () =>
-        set({ selectedTags: [], searchQuery: "", currentPage: 1 }),
+        set({ selectedTags: [], searchQuery: '', currentPage: 1 }),
     }),
     {
-      name: "blog-storage",
+      name: 'blog-storage',
       partialize: (state) => ({
         drafts: state.drafts,
         selectedTags: state.selectedTags,
       }),
-    }
-  )
+    },
+  ),
 );

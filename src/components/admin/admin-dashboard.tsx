@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useBlogStore } from "@/stores/blog-store";
-import { useArticles } from "@/services/hooks/use-articles";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useBlogStore } from '@/stores/blog-store';
+import { useArticles } from '@/services/hooks/use-articles';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   BarChart,
   Bar,
@@ -13,11 +13,11 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from "recharts";
-import { FileText, PenTool, Tag, TrendingUp, Plus, Eye } from "lucide-react";
-import Link from "next/link";
-import { useMemo } from "react";
-import { getArticleTags } from "@/utils/get-article-normalize";
+} from 'recharts';
+import { FileText, PenTool, Tag, TrendingUp, Plus, Eye } from 'lucide-react';
+import Link from 'next/link';
+import { useMemo } from 'react';
+import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function AdminDashboard() {
   const { drafts } = useBlogStore();
@@ -41,11 +41,11 @@ export function AdminDashboard() {
 
     const totalReactions = articles.reduce(
       (sum, article) => sum + article.public_reactions_count,
-      0
+      0,
     );
     const totalComments = articles.reduce(
       (sum, article) => sum + article.comments_count,
-      0
+      0,
     );
 
     return {
