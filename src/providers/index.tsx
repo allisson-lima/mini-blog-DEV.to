@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { ProviderReactQuery } from "./provider-react-query";
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
-import { ThemeProvider } from "./theme-provider";
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { ProviderReactQuery } from './provider-react-query';
+import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import { ThemeProvider } from './theme-provider';
 
 interface IDataProvider {
   children: React.ReactNode;
@@ -10,21 +11,23 @@ interface IDataProvider {
 
 export function Providers({ children }: IDataProvider) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <ProviderReactQuery>
-        <ProgressBar
-          height="4px"
-          color="#009b46"
-          options={{ showSpinner: true }}
-          shallowRouting
-        />
-        {children}
-      </ProviderReactQuery>
-    </ThemeProvider>
+    <>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <ProviderReactQuery>
+          <NuqsAdapter>{children}</NuqsAdapter>
+          <ProgressBar
+            height="4px"
+            color="#009b46"
+            options={{ showSpinner: true }}
+            shallowRouting
+          />
+        </ProviderReactQuery>
+      </ThemeProvider>
+    </>
   );
 }

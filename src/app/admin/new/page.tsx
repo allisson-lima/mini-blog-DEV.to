@@ -1,4 +1,4 @@
-import { PostEditor } from "@/components/editor/post-editor";
+import { PostEditor } from '@/components/editor/post-editor';
 
 export default function NewPostPage() {
   return (

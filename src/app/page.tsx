@@ -1,9 +1,9 @@
-import { ArticlesList } from "@/components/articles/articles-list";
+import { ArticlesList } from '@/components/articles/articles-list';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="container py-8">
+      <div className="container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Posts Recentes</h1>
           <p className="text-muted-foreground">
@@ -11,7 +11,7 @@ export default function HomePage() {
           </p>
         </div>
         <ArticlesList />
-      </main>
+      </div>
     </div>
   );
 }

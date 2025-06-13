@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -15,18 +15,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Save, Eye, Send, X } from "lucide-react";
+} from '@/components/ui/form';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Save, Eye, Send, X } from 'lucide-react';
 import {
   createArticleSchema,
   type CreateArticleFormData,
-} from "@/schemas/article-schema";
-import { useBlogStore } from "@/stores/blog-store";
-import { useCreateArticle } from "@/services/hooks/use-articles";
-import { toast } from "sonner";
+} from '@/schemas/article-schema';
+import { useBlogStore } from '@/stores/blog-store';
+import { useCreateArticle } from '@/services/hooks/use-articles';
+import { toast } from 'sonner';
 
 interface PostEditorProps {
   draftId?: string;
@@ -36,25 +36,25 @@ export function PostEditor({ draftId }: PostEditorProps) {
   const router = useRouter();
   const { drafts, addDraft, updateDraft, setCurrentDraft } = useBlogStore();
   const createArticleMutation = useCreateArticle();
-  const [tagInput, setTagInput] = useState("");
+  const [tagInput, setTagInput] = useState('');
   const [preview, setPreview] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(createArticleSchema),
     defaultValues: {
-      title: "",
-      body_markdown: "",
-      description: "",
+      title: '',
+      body_markdown: '',
+      description: '',
       tags: [],
       published: false,
-      main_image: "",
-      canonical_url: "",
-      series: "",
+      main_image: '',
+      canonical_url: '',
+      series: '',
     },
   });
 
   const { watch, setValue, getValues } = form;
-  const watchedTags = watch("tags") || [];
+  const watchedTags = watch('tags') || [];
 
   useEffect(() => {
     if (draftId) {
@@ -66,10 +66,10 @@ export function PostEditor({ draftId }: PostEditorProps) {
           body_markdown: draft.body_markdown,
           tags: draft.tags,
           published: false,
-          description: "",
-          main_image: "",
-          canonical_url: "",
-          series: "",
+          description: '',
+          main_image: '',
+          canonical_url: '',
+          series: '',
         });
       }
     }
@@ -81,22 +81,22 @@ export function PostEditor({ draftId }: PostEditorProps) {
       watchedTags.length < 4 &&
       !watchedTags.includes(tagInput.trim())
     ) {
-      setValue("tags", [...watchedTags, tagInput.trim()]);
-      setTagInput("");
+      setValue('tags', [...watchedTags, tagInput.trim()]);
+      setTagInput('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
     setValue(
-      "tags",
-      watchedTags.filter((tag) => tag !== tagToRemove)
+      'tags',
+      watchedTags.filter((tag) => tag !== tagToRemove),
     );
   };
 
   const handleSaveDraft = () => {
     const values = getValues();
     if (!values.title.trim()) {
-      toast.error("Título é obrigatório para salvar o rascunho");
+      toast.error('Título é obrigatório para salvar o rascunho');
       return;
     }
 
@@ -114,7 +114,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
       });
     }
 
-    toast.success("Rascunho salvo com sucesso!");
+    toast.success('Rascunho salvo com sucesso!');
   };
 
   const onSubmit = async (data: CreateArticleFormData) => {
@@ -137,9 +137,9 @@ export function PostEditor({ draftId }: PostEditorProps) {
         // deleteDraft(draftId);
       }
 
-      router.push("/");
+      router.push('/');
     } catch (error) {
-      console.error("Erro ao publicar:", error);
+      console.error('Erro ao publicar:', error);
     }
   };
 
@@ -147,7 +147,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
     <div className="max-w-4xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">
-          {draftId ? "Editando Rascunho" : "Novo Post"}
+          {draftId ? 'Editando Rascunho' : 'Novo Post'}
         </h1>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleSaveDraft} className="gap-2">
@@ -160,7 +160,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
             className="gap-2"
           >
             <Eye className="h-4 w-4" />
-            {preview ? "Editor" : "Preview"}
+            {preview ? 'Editor' : 'Preview'}
           </Button>
         </div>
       </div>
@@ -209,7 +209,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
                   />
 
                   <Tabs
-                    value={preview ? "preview" : "editor"}
+                    value={preview ? 'preview' : 'editor'}
                     className="w-full"
                   >
                     <TabsList>
@@ -240,7 +240,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
                           className="prose max-w-none"
                           dangerouslySetInnerHTML={{
                             __html:
-                              watch("body_markdown")?.replace(/\n/g, "<br>") ||
+                              watch('body_markdown')?.replace(/\n/g, '<br>') ||
                               '<p className="text-muted-foreground">Preview aparecerá aqui...</p>',
                           }}
                         />
@@ -328,7 +328,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) =>
-                        e.key === "Enter" &&
+                        e.key === 'Enter' &&
                         (e.preventDefault(), handleAddTag())
                       }
                       disabled={watchedTags.length >= 4}
@@ -371,9 +371,9 @@ export function PostEditor({ draftId }: PostEditorProps) {
                   disabled={createArticleMutation.isPending}
                 >
                   <Send className="h-4 w-4" />
-                  {watch("published")
-                    ? "Publicar Post"
-                    : "Salvar como Rascunho"}
+                  {watch('published')
+                    ? 'Publicar Post'
+                    : 'Salvar como Rascunho'}
                 </Button>
 
                 <Button

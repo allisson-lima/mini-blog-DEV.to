@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useBlogStore } from "@/stores/blog-store";
-import { DraftCard } from "./draft-card";
-import { Button } from "@/components/ui/button";
-import { PenTool, Plus } from "lucide-react";
-import Link from "next/link";
+import { useBlogStore } from '@/stores/blog-store';
+import { DraftCard } from './draft-card';
+import { Button } from '@/components/ui/button';
+import { PenTool, Plus } from 'lucide-react';
+import Link from 'next/link';
 
 export function DraftsList() {
   const { drafts } = useBlogStore();
