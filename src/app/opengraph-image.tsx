@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 
-export const runtime = 'edge';
+// sendo comentando devido ao limite de tamanho do arquivo no plano gratuito do Vercel
+// export const runtime = 'edge';
 
 export const alt =
   'DevBlog - Compartilhe conhecimento, inspire desenvolvedores';
