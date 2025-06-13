@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
-import { useArticles } from "@/services/hooks/use-articles";
-import { useBlogStore } from "@/stores/blog-store";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, Tag, TrendingUp } from "lucide-react";
-import { getArticleTags } from "@/utils/get-article-normalize";
+import { useState, useMemo } from 'react';
+import { useArticles } from '@/services/hooks/use-articles';
+import { useBlogStore } from '@/stores/blog-store';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Search, Tag, TrendingUp } from 'lucide-react';
+import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function TagsManager() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const { data: articles } = useArticles();
   const { selectedTags, toggleTag } = useBlogStore();
 
@@ -34,7 +34,7 @@ export function TagsManager() {
 
   const filteredTags = useMemo(() => {
     return tagStats.filter(({ tag }) =>
-      tag.toLowerCase().includes(searchQuery.toLowerCase())
+      tag.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [tagStats, searchQuery]);
 
@@ -75,7 +75,7 @@ export function TagsManager() {
                   <Badge
                     key={tag}
                     variant={
-                      selectedTags.includes(tag) ? "default" : "secondary"
+                      selectedTags.includes(tag) ? 'default' : 'secondary'
                     }
                     className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
                     onClick={() => toggleTag(tag)}
@@ -115,7 +115,7 @@ export function TagsManager() {
                       </span>
                       <Badge
                         variant={
-                          selectedTags.includes(tag) ? "default" : "outline"
+                          selectedTags.includes(tag) ? 'default' : 'outline'
                         }
                       >
                         #{tag}

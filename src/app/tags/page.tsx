@@ -1,11 +1,11 @@
-import { TagsManager } from "@/components/tags/tags-manager";
+import { TagsManager } from '@/components/tags/tags-manager';
 
 export default function TagsPage() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="container py-8">
+      <div className="container py-8">
         <TagsManager />
-      </main>
+      </div>
     </div>
   );
 }

@@ -17,7 +17,7 @@ export type ArticleOrganization = {
 };
 
 export type Article = {
-  type_of: "article";
+  type_of: 'article';
   id: number;
   title: string;
   description: string;
@@ -25,6 +25,7 @@ export type Article = {
   readable_publish_date: string;
   social_image: string;
   tag_list: string[];
+  body_markdown: string;
   tags: string;
   slug: string;
   path: string;
@@ -53,7 +54,7 @@ export type ArticlesQueryParams = {
   tags?: string;
   tags_exclude?: string;
   username?: string;
-  state?: "fresh" | "rising" | "all";
+  state?: 'fresh' | 'rising' | 'all';
   top?: number;
   collection_id?: number;
 };

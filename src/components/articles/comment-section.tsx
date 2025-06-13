@@ -1,25 +1,25 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { MessageCircle, Reply } from "lucide-react";
-import type { Comment } from "@/types/article";
-import { commentSchema, type CommentFormData } from "@/schemas/article-schema";
-import { useAddComment } from "@/services/hooks/use-comments";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+} from '@/components/ui/form';
+import { MessageCircle, Reply } from 'lucide-react';
+import type { Comment } from '@/types/article';
+import { commentSchema, type CommentFormData } from '@/schemas/article-schema';
+import { useAddComment } from '@/services/hooks/use-comments';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface CommentSectionProps {
   articleId: string;
@@ -35,13 +35,13 @@ function CommentItem({ comment, level = 0 }: CommentItemProps) {
   const [showReplyForm, setShowReplyForm] = useState(false);
 
   return (
-    <div className={`${level > 0 ? "ml-8 border-l-2 border-muted pl-4" : ""}`}>
+    <div className={`${level > 0 ? 'ml-8 border-l-2 border-muted pl-4' : ''}`}>
       <Card className="mb-4">
         <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage
-                src={comment.user.profile_image || "/placeholder.svg"}
+                src={comment.user.profile_image || '/placeholder.svg'}
                 alt={comment.user.name}
               />
               <AvatarFallback>{comment?.user?.name?.charAt(0)}</AvatarFallback>
@@ -93,7 +93,7 @@ export function CommentSection({ articleId, comments }: CommentSectionProps) {
   const form = useForm<CommentFormData>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
-      body_markdown: "",
+      body_markdown: '',
     },
   });
 
@@ -105,7 +105,7 @@ export function CommentSection({ articleId, comments }: CommentSectionProps) {
       });
       form.reset();
     } catch (error) {
-      console.error("Erro ao adicionar comentário:", error);
+      console.error('Erro ao adicionar comentário:', error);
     }
   };
 
@@ -142,7 +142,7 @@ export function CommentSection({ articleId, comments }: CommentSectionProps) {
                   disabled={addCommentMutation.isPending}
                   className="gap-2"
                 >
-                  {addCommentMutation.isPending ? "Enviando..." : "Comentar"}
+                  {addCommentMutation.isPending ? 'Enviando...' : 'Comentar'}
                 </Button>
               </div>
             </form>

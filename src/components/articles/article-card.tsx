@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import Link from "next/link";
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Bookmark, Clock } from "lucide-react";
-import type { Article } from "@/types/article";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { useBlogStore } from "@/stores/blog-store";
-import { getArticleTags } from "@/utils/get-article-normalize";
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Heart, MessageCircle, Bookmark, Clock } from 'lucide-react';
+import type { Article } from '@/types/article';
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import { useBlogStore } from '@/stores/blog-store';
+import { getArticleTags } from '@/utils/get-article-normalize';
 
 interface ArticleCardProps {
   article: Article;
-  variant?: "default" | "compact";
+  variant?: 'default' | 'compact';
 }
 
 export function ArticleCard({
   article,
-  variant = "default",
+  variant = 'default',
 }: ArticleCardProps) {
   const { toggleTag } = useBlogStore();
 
@@ -42,7 +42,7 @@ export function ArticleCard({
         <div className="flex items-center gap-3 mb-3">
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={article.user.profile_image || "/placeholder.svg"}
+              src={article.user.profile_image || '/placeholder.svg'}
               alt={article.user.name}
             />
             <AvatarFallback>{article.user.name.charAt(0)}</AvatarFallback>
@@ -58,10 +58,10 @@ export function ArticleCard({
           </div>
         </div>
 
-        {article.cover_image && variant === "default" && (
+        {article.cover_image && variant === 'default' && (
           <div className="relative aspect-video rounded-lg overflow-hidden">
             <Image
-              src={article.cover_image || "/placeholder.svg"}
+              src={article.cover_image || '/placeholder.svg'}
               alt={article.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -80,7 +80,7 @@ export function ArticleCard({
           </p>
         </Link>
 
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="flex flex-wrap gap-1 ">
           {getArticleTags(article)
             .slice(0, 4)
             .map((tag) => (
