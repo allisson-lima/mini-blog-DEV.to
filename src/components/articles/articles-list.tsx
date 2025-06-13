@@ -1,37 +1,52 @@
-"use client";
+'use client';
 
-import { useArticles } from "@/services/hooks/use-articles";
-import { useBlogStore } from "@/stores/blog-store";
-import { ArticleCard } from "./article-card";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, RefreshCw } from "lucide-react";
-import { useMemo } from "react";
-import { getArticleTags } from "@/utils/get-article-normalize";
+import { useBlogStore } from '@/stores/blog-store';
+import { ArticleCard } from './article-card';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { AlertCircle, RefreshCw, Loader2 } from 'lucide-react';
+import { useMemo, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
+import { useInfiniteArticles } from '@/services/hooks/use-articles';
+import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function ArticlesList() {
-  const { selectedTags, searchQuery, currentPage } = useBlogStore();
+  const { selectedTags, searchQuery } = useBlogStore();
+  const { ref, inView } = useInView();
 
   const queryParams = useMemo(
     () => ({
-      page: currentPage,
       per_page: 20,
-      ...(selectedTags.length > 0 && { tags: selectedTags.join(",") }),
+      ...(selectedTags.length > 0 && { tags: selectedTags.join(',') }),
     }),
-    [selectedTags, currentPage]
+    [selectedTags],
   );
 
   const {
-    data: articles,
+    data,
     isLoading,
     error,
     refetch,
-  } = useArticles(queryParams);
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteArticles(queryParams);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const allArticles = useMemo(() => {
+    if (!data) return [];
+    return data.pages.flatMap((page) => page.articles);
+  }, [data]);
 
   const filteredArticles = useMemo(() => {
-    if (!articles) return [];
+    if (!allArticles) return [];
 
-    return articles.filter((article) => {
+    return allArticles.filter((article) => {
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
         const articleTags = getArticleTags(article);
@@ -43,9 +58,9 @@ export function ArticlesList() {
       }
       return true;
     });
-  }, [articles, searchQuery]);
+  }, [allArticles, searchQuery]);
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
@@ -84,8 +99,8 @@ export function ArticlesList() {
         <h3 className="text-lg font-semibold mb-2">Nenhum post encontrado</h3>
         <p className="text-muted-foreground">
           {searchQuery || selectedTags.length > 0
-            ? "Tente ajustar os filtros de busca."
-            : "Não há posts disponíveis no momento."}
+            ? 'Tente ajustar os filtros de busca.'
+            : 'Não há posts disponíveis no momento.'}
         </p>
       </div>
     );
@@ -99,13 +114,26 @@ export function ArticlesList() {
         ))}
       </div>
 
-      {filteredArticles.length >= 20 && (
-        <div className="flex justify-center">
-          <Button variant="outline" onClick={() => {}}>
+      <div ref={ref} className="flex justify-center py-8">
+        {isFetchingNextPage ? (
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            <span>Carregando mais posts...</span>
+          </div>
+        ) : hasNextPage ? (
+          <Button
+            variant="outline"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
             Carregar mais posts
           </Button>
-        </div>
-      )}
+        ) : filteredArticles.length > 0 ? (
+          <p className="text-muted-foreground text-sm">
+            Você chegou ao fim dos posts
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }
