@@ -1,15 +1,37 @@
 'use client';
 
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
 });
 
 api.interceptors.response.use(
-  (response) => response,
-  (error: AxiosError) => {
-    console.error('API Error:', error);
+  (res) => res,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes('/refresh')
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        await axios.post('/api/refresh');
+        return api(originalRequest);
+      } catch (refreshError: any) {
+        console.error('Erro ao atualizar o token:', refreshError);
+        if (refreshError.response?.status === 401) {
+          window.location.href = '/login';
+        } else {
+          console.error('Erro ao atualizar o token:', refreshError);
+        }
+        return Promise.reject(refreshError);
+      }
+    }
+
     return Promise.reject(error);
   },
 );

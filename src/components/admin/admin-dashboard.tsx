@@ -71,7 +71,7 @@ export function AdminDashboard() {
             Visão geral do seu blog e estatísticas
           </p>
         </div>
-        <Link href="/admin/new">
+        <Link href="/account/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             Novo Post

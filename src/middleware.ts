@@ -3,35 +3,48 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAccessToken } from '@/lib/auth';
 
-const protectedRoutes = ['/admin', '/drafts'];
-
-const adminRoutes = ['/admin'];
-
-const publicRoutes = ['/', '/posts', '/tags', '/login'];
-
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('access-token')?.value;
 
-  const isProtectedRoute = protectedRoutes.some((route) =>
+  const isApiRoute = pathname.startsWith('/api');
+
+  const protectedApiRoutes = ['/api/articles'];
+  const protectedAppRoutes = [
+    '/admin',
+    '/drafts',
+    '/account',
+    '/posts',
+    '/tags',
+  ];
+  const publicRoutes = ['/', '/posts', '/tags', '/login'];
+  const adminRoutes = ['/admin'];
+
+  const isProtectedApi = protectedApiRoutes.some((route) =>
     pathname.startsWith(route),
   );
+
+  const isProtectedApp = protectedAppRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
+
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+
   const isPublicRoute = publicRoutes.some(
     (route) => pathname === route || pathname.startsWith(route),
   );
 
-  if (isPublicRoute && !isProtectedRoute) {
+  if (!isApiRoute && isPublicRoute && !isProtectedApp) {
     return NextResponse.next();
   }
 
-  if (!accessToken && isProtectedRoute) {
+  if (!accessToken && (isProtectedApp || isProtectedApi)) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  if (accessToken && isProtectedRoute) {
+  if (accessToken && (isProtectedApp || isProtectedApi)) {
     try {
       const payload = await verifyAccessToken(accessToken);
 
@@ -58,13 +71,8 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/api/articles/:path*',
+    '/api/articles/unpublished',
   ],
 };

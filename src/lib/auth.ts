@@ -5,10 +5,10 @@ import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-here',
+  process.env.JWT_SECRET || 'secret-key',
 );
 const REFRESH_SECRET = new TextEncoder().encode(
-  process.env.REFRESH_SECRET || 'your-refresh-secret-here',
+  process.env.REFRESH_SECRET || 'refresh-secret',
 );
 
 export interface User {
