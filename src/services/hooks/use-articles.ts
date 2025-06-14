@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { queryClient } from '@/lib/query-client-react-query';
 import { getArticleTags } from '@/utils/get-article-normalize';
 import { api } from '../api';
+import axios from 'axios';
 
 const normalizeArticle = (article: Article): Article => {
   return {
@@ -157,12 +158,7 @@ export const useArticle = (id: string) => {
 export const useCreateArticle = () => {
   return useMutation<Article, Error, CreateArticlePayload>({
     mutationFn: async (payload) => {
-      const response = await api.post<Article>('/articles', payload, {
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': process.env.NEXT_PUBLIC_API_KEY!,
-        },
-      });
+      const response = await axios.post<Article>('/api/articles', payload);
       return response.data;
     },
     onSuccess: () => {
