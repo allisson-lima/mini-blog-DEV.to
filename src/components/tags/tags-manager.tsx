@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useArticles } from '@/services/hooks/use-articles';
+import { useArticles } from '@/services/hooks/articles/use-articles';
 import { useBlogStore } from '@/stores/blog-store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,7 +12,9 @@ import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function TagsManager() {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: articles } = useArticles();
+  const { data: articles } = useArticles({
+    per_page: 500,
+  });
   const { selectedTags, toggleTag } = useBlogStore();
 
   const tagStats = useMemo(() => {

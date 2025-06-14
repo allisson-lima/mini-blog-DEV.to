@@ -9,7 +9,7 @@ import { AlertCircle, RefreshCw, Loader2 } from 'lucide-react';
 import { useMemo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useArticleFilters } from '@/hooks/use-article-filters';
-import { useInfiniteArticles } from '@/services/hooks/use-articles';
+import { useInfiniteArticles } from '@/services/hooks/articles/use-articles';
 import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function ArticlesList() {

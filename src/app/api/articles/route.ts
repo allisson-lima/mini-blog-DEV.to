@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
     const validated = articleSchema.parse(body);
 
     const devApiKey = process.env.NEXT_PUBLIC_API_KEY;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://dev.to/api';
+    const baseUrl =
+      process.env.NEXT_PUBLIC_API_URL_DEV_TO || 'https://dev.to/api';
 
     if (!devApiKey) {
       return NextResponse.json({ error: 'Missing API key' }, { status: 500 });
