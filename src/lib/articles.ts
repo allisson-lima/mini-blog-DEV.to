@@ -17,7 +17,13 @@ export const normalizeArticle = (article: Article): Article => {
 export async function getArticleById(id: string): Promise<Article | null> {
   try {
     const response = await axios.get<Article>(
-      `${process.env.NEXT_PUBLIC_API_URL}/articles/${id}`,
+      `${process.env.NEXT_PUBLIC_API_URL_DEV_TO}/articles/${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': process.env.NEXT_PUBLIC_API_KEY!,
+        },
+      },
     );
     return normalizeArticle(response.data);
   } catch (error) {

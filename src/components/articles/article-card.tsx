@@ -72,7 +72,7 @@ export function ArticleCard({
         )}
       </CardHeader>
 
-      <CardContent className="pb-3">
+      <CardContent className="pb-3 flex-1">
         <Link href={`/posts/${article.id}`} className="block group">
           <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {article.title}

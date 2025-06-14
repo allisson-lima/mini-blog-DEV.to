@@ -10,13 +10,7 @@ export async function middleware(request: NextRequest) {
   const isApiRoute = pathname.startsWith('/api');
 
   const protectedApiRoutes = ['/api/articles'];
-  const protectedAppRoutes = [
-    '/admin',
-    '/drafts',
-    '/account',
-    '/posts',
-    '/tags',
-  ];
+  const protectedAppRoutes = ['/admin', '/drafts', '/account'];
   const publicRoutes = ['/', '/posts', '/tags', '/login'];
   const adminRoutes = ['/admin'];
 
@@ -41,6 +35,8 @@ export async function middleware(request: NextRequest) {
   if (!accessToken && (isProtectedApp || isProtectedApi)) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
+    loginUrl.searchParams.set('expired', 'true');
+
     return NextResponse.redirect(loginUrl);
   }
 
@@ -70,9 +66,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-    '/api/articles/:path*',
-    '/api/articles/unpublished',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
