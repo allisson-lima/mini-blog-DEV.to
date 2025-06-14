@@ -19,15 +19,10 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await axios.post('/api/refresh');
+        await axios.post('/api/auth/refresh');
         return api(originalRequest);
       } catch (refreshError: any) {
         console.error('Erro ao atualizar o token:', refreshError);
-        if (refreshError.response?.status === 401) {
-          window.location.href = '/login';
-        } else {
-          console.error('Erro ao atualizar o token:', refreshError);
-        }
         return Promise.reject(refreshError);
       }
     }

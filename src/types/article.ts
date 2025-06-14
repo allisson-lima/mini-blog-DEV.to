@@ -19,6 +19,8 @@ export type ArticleOrganization = {
 export type Article = {
   type_of: 'article';
   id: number;
+  published: boolean;
+  series: string;
   title: string;
   description: string;
   cover_image: string | null;
@@ -31,6 +33,7 @@ export type Article = {
   path: string;
   url: string;
   canonical_url: string;
+  page_views_count: number;
   comments_count: number;
   positive_reactions_count: number;
   public_reactions_count: number;
@@ -64,7 +67,7 @@ export type CreateArticlePayload = {
     title: string;
     body_markdown: string;
     published?: boolean;
-    tags: string[];
+    tags: string[] | undefined;
     series?: string;
     main_image?: string;
     canonical_url?: string;

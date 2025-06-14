@@ -27,24 +27,22 @@ import {
   Laptop,
   LogIn,
 } from 'lucide-react';
-import { useBlogStore } from '@/stores/blog-store';
 import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/stores/auth-store';
 import { toast } from 'sonner';
+import { useCurrentUser } from '@/services/hooks/use-session';
 
 export function Header() {
   const pathname = usePathname();
-  const { selectedTags } = useBlogStore();
   const { theme, setTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
+  const { data: user } = useCurrentUser();
 
   const navItems = [
     { href: '/', label: 'Posts', icon: BookOpen },
+    { href: '/tags', label: 'Tags', icon: Tag },
     ...(isAuthenticated
-      ? [
-          { href: '/drafts', label: 'Rascunhos', icon: PenTool },
-          { href: '/tags', label: 'Tags', icon: Tag },
-        ]
+      ? [{ href: '/account/drafts', label: 'Rascunhos', icon: PenTool }]
       : []),
   ];
 
@@ -182,7 +180,7 @@ export function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link
-                    href="/admin/settings"
+                    href="/account/settings"
                     className="cursor-pointer flex w-full"
                   >
                     <Settings className="mr-2 h-4 w-4" />
@@ -209,21 +207,6 @@ export function Header() {
           )}
         </div>
       </div>
-
-      {selectedTags.length > 0 && (
-        <div className="border-t bg-muted/50 px-4 py-2">
-          <div className="container flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              Tags selecionadas:
-            </span>
-            {selectedTags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="gap-1">
-                #{tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
     </header>
   );
 }

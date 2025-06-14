@@ -60,6 +60,9 @@ export const useAuthStore = create<AuthState>()(
       logout: async () => {
         try {
           await api.post('/api/auth/logout');
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('auth-storage');
+          }
         } catch (error) {
           console.error('Erro no logout:', error);
         } finally {

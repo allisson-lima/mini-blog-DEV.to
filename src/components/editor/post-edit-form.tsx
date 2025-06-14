@@ -19,25 +19,46 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, Eye, Send, X } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Save,
+  Eye,
+  Send,
+  X,
+  ArrowLeft,
+  ExternalLink,
+  AlertCircle,
+} from 'lucide-react';
 import {
   createArticleSchema,
   type CreateArticleFormData,
 } from '@/schemas/article-schema';
-import { useBlogStore } from '@/stores/blog-store';
-import { useCreateArticle } from '@/services/hooks/articles/use-articles';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { toast } from 'sonner';
+import Link from 'next/link';
+import {
+  // useArticleForEdit,
+  useUpdateArticle,
+} from '@/services/hooks/articles/use-edit-article';
+import { getArticleTags } from '@/utils/get-article-normalize';
+import { useAccountArticles } from '@/services/hooks/articles/use-articles-me';
 
-interface PostEditorProps {
-  draftId?: string;
+interface PostEditFormProps {
+  articleId: string;
 }
 
-export function PostEditor({ draftId }: PostEditorProps) {
+export function PostEditForm({ articleId }: PostEditFormProps) {
   const router = useRouter();
-  const { drafts, addDraft, updateDraft, setCurrentDraft } = useBlogStore();
-  const createArticleMutation = useCreateArticle();
+  // Trecho comentado devido alguns bugs ao buscar o id do artigo existente e api retornar 404
+  // const { data: article, isLoading, error } = useArticleForEdit(articleId);
+  const { data: articles, isLoading, error } = useAccountArticles();
+  const article = articles?.articles.find(
+    (item) => item.id === Number(articleId),
+  );
+  const updateArticleMutation = useUpdateArticle();
   const [tagInput, setTagInput] = useState('');
   const [preview, setPreview] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(createArticleSchema),
@@ -53,27 +74,32 @@ export function PostEditor({ draftId }: PostEditorProps) {
     },
   });
 
-  const { watch, setValue, getValues } = form;
+  const { watch, setValue, getValues, reset } = form;
   const watchedTags = watch('tags') || [];
 
   useEffect(() => {
-    if (draftId) {
-      const draft = drafts.find((d) => d.id === draftId);
-      if (draft) {
-        setCurrentDraft(draft);
-        form.reset({
-          title: draft.title,
-          body_markdown: draft.body_markdown,
-          tags: draft.tags,
-          published: false,
-          description: '',
-          main_image: '',
-          canonical_url: '',
-          series: '',
-        });
-      }
+    if (article) {
+      const articleTags = getArticleTags(article);
+      reset({
+        title: article.title,
+        body_markdown: article.body_markdown,
+        description: article.description || '',
+        tags: articleTags,
+        published: !!article.published_at,
+        main_image: article.cover_image || '',
+        canonical_url: article.canonical_url || '',
+        series: article.series || '',
+      });
     }
-  }, [draftId, drafts, form, setCurrentDraft]);
+  }, [article, reset]);
+
+  // Monitora mudanças no formulário
+  useEffect(() => {
+    const subscription = watch(() => {
+      setHasUnsavedChanges(true);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const handleAddTag = () => {
     if (
@@ -83,6 +109,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
     ) {
       setValue('tags', [...watchedTags, tagInput.trim()]);
       setTagInput('');
+      setHasUnsavedChanges(true);
     }
   };
 
@@ -91,66 +118,160 @@ export function PostEditor({ draftId }: PostEditorProps) {
       'tags',
       watchedTags.filter((tag) => tag !== tagToRemove),
     );
+    setHasUnsavedChanges(true);
   };
 
-  const handleSaveDraft = () => {
+  const handleSaveDraft = async () => {
     const values = getValues();
     if (!values.title.trim()) {
-      toast.error('Título é obrigatório para salvar o rascunho');
+      toast.error('Título é obrigatório para salvar');
       return;
     }
 
-    if (draftId) {
-      updateDraft(draftId, {
-        title: values.title,
-        body_markdown: values.body_markdown,
-        tags: values.tags || [],
+    try {
+      await updateArticleMutation.mutateAsync({
+        articleId,
+        data: {
+          article: {
+            title: values.title,
+            body_markdown: values.body_markdown,
+            published: false,
+            description: values.description,
+            tags: values.tags,
+            main_image: values.main_image || undefined,
+            canonical_url: values.canonical_url || undefined,
+            series: values.series || undefined,
+          },
+        },
       });
-    } else {
-      addDraft({
-        title: values.title,
-        body_markdown: values.body_markdown,
-        tags: values.tags || [],
-      });
+      setHasUnsavedChanges(false);
+      toast.success('Rascunho salvo com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar rascunho:', error);
     }
-
-    toast.success('Rascunho salvo com sucesso!');
   };
 
   const onSubmit = async (data: CreateArticleFormData) => {
     try {
-      await createArticleMutation.mutateAsync({
-        article: {
-          title: data.title,
-          body_markdown: data.body_markdown,
-          published: data.published,
-          description: data.description,
-          tags: data.tags || [],
-          main_image: data.main_image || undefined,
-          canonical_url: data.canonical_url || undefined,
-          series: data.series || undefined,
+      await updateArticleMutation.mutateAsync({
+        articleId,
+        data: {
+          article: {
+            title: data.title,
+            body_markdown: data.body_markdown,
+            published: data.published,
+            description: data.description,
+            tags: data.tags,
+            main_image: data.main_image || undefined,
+            canonical_url: data.canonical_url || undefined,
+            series: data.series || undefined,
+          },
         },
       });
 
-      if (draftId) {
-        // excluir o rascunho após a publicação
-        // deleteDraft(draftId);
-      }
-
-      router.push('/');
+      setHasUnsavedChanges(false);
+      router.push(data.published ? `/posts/${articleId}` : '/drafts');
     } catch (error) {
-      console.error('Erro ao publicar:', error);
+      console.error('Erro ao atualizar artigo:', error);
     }
   };
 
+  // Estados de loading e erro
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className="h-8 bg-muted rounded w-48 animate-pulse"></div>
+            <div className="h-4 bg-muted rounded w-64 animate-pulse"></div>
+          </div>
+          <div className="flex gap-2">
+            <div className="h-10 w-32 bg-muted rounded animate-pulse"></div>
+            <div className="h-10 w-24 bg-muted rounded animate-pulse"></div>
+          </div>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="h-96 bg-muted rounded-lg animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            <div className="h-48 bg-muted rounded-lg animate-pulse"></div>
+            <div className="h-32 bg-muted rounded-lg animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Erro ao carregar o artigo para edição. Verifique se o ID está
+            correto e tente novamente.
+          </AlertDescription>
+        </Alert>
+        <div className="mt-4">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!article) {
+    return null;
+  }
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          {draftId ? 'Editando Rascunho' : 'Novo Post'}
-        </h1>
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Voltar
+            </Button>
+            <Link href={`/posts/${articleId}`} target="_blank">
+              <Button variant="ghost" size="sm" className="gap-2">
+                <ExternalLink className="h-4 w-4" />
+                Ver Post
+              </Button>
+            </Link>
+          </div>
+          <h1 className="text-2xl font-bold">Editando: {article.title}</h1>
+          <p className="text-muted-foreground">
+            Artigo criado em{' '}
+            {new Date(article.created_at).toLocaleDateString('pt-BR')}
+          </p>
+        </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleSaveDraft} className="gap-2">
+          {hasUnsavedChanges && (
+            <Badge variant="secondary" className="gap-1">
+              <AlertCircle className="h-3 w-3" />
+              Alterações não salvas
+            </Badge>
+          )}
+          <Button
+            variant="outline"
+            onClick={handleSaveDraft}
+            className="gap-2"
+            disabled={updateArticleMutation.isPending}
+          >
             <Save className="h-4 w-4" />
             Salvar Rascunho
           </Button>
@@ -165,6 +286,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
         </div>
       </div>
 
+      {/* Formulário */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-3">
@@ -241,7 +363,7 @@ export function PostEditor({ draftId }: PostEditorProps) {
                           dangerouslySetInnerHTML={{
                             __html:
                               watch('body_markdown')?.replace(/\n/g, '<br>') ||
-                              '<p className="text-muted-foreground">Preview aparecerá aqui...</p>',
+                              '<p class="text-muted-foreground">Preview aparecerá aqui...</p>',
                           }}
                         />
                       </div>
@@ -368,12 +490,18 @@ export function PostEditor({ draftId }: PostEditorProps) {
                 <Button
                   type="submit"
                   className="w-full gap-2"
-                  disabled={createArticleMutation.isPending}
+                  disabled={updateArticleMutation.isPending}
                 >
-                  <Send className="h-4 w-4" />
-                  {watch('published')
-                    ? 'Publicar Post'
-                    : 'Salvar como Rascunho'}
+                  {updateArticleMutation.isPending ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      {watch('published')
+                        ? 'Atualizar e Publicar'
+                        : 'Salvar como Rascunho'}
+                    </>
+                  )}
                 </Button>
 
                 <Button
