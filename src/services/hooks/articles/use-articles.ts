@@ -10,8 +10,8 @@ import { useBlogStore } from '@/stores/blog-store';
 import { toast } from 'sonner';
 import { queryClient } from '@/lib/query-client-react-query';
 import { getArticleTags } from '@/utils/get-article-normalize';
-import { api_dev } from '../api.dev.to';
-import { api } from '../api';
+import { api_dev } from '../../api.dev.to';
+import { api } from '../../api';
 
 const normalizeArticle = (article: Article): Article => {
   return {

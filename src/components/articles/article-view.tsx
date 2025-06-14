@@ -20,7 +20,7 @@ import Image from 'next/image';
 import type { Article } from '@/types/article';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useArticle } from '@/services/hooks/use-articles';
+import { useArticle } from '@/services/hooks/articles/use-articles';
 import { useComments } from '@/services/hooks/use-comments';
 import { getArticleTags } from '@/utils/get-article-normalize';
 import { MarkdownRenderer } from '../markdown-renderer';
