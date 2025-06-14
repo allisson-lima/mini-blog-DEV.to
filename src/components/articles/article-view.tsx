@@ -23,30 +23,28 @@ import { toast } from 'sonner';
 import { useArticle } from '@/services/hooks/use-articles';
 import { useComments } from '@/services/hooks/use-comments';
 import { getArticleTags } from '@/utils/get-article-normalize';
+import { MarkdownRenderer } from '../markdown-renderer';
 
 interface ArticleViewProps {
   articleId: string;
-  article?: Article; // Artigo pré-carregado do servidor
+  article?: Article;
 }
 
 export function ArticleView({
   articleId,
   article: initialArticle,
 }: ArticleViewProps) {
-  // Usamos o artigo pré-carregado, mas também mantemos o hook para atualizações em tempo real
   const { data: clientArticle } = useArticle(articleId);
   const { data: comments } = useComments(articleId);
   const [article, setArticle] = useState<Article | undefined>(initialArticle);
   const [copied, setCopied] = useState(false);
 
-  // Atualiza o artigo se houver mudanças do cliente
   useEffect(() => {
     if (clientArticle) {
       setArticle(clientArticle);
     }
   }, [clientArticle]);
 
-  // Função para compartilhar o artigo
   const handleShare = async () => {
     const shareData = {
       title: article?.title,
@@ -69,12 +67,11 @@ export function ArticleView({
   };
 
   if (!article) {
-    return null; // O componente de página já lida com o caso de artigo não encontrado
+    return null;
   }
 
   return (
     <article className="max-w-4xl mx-auto">
-      {/* Header */}
       <header className="mb-8">
         <h1 className="text-4xl font-bold mb-4 leading-tight">
           {article.title}
@@ -109,7 +106,6 @@ export function ArticleView({
           </div>
         </div>
 
-        {/* Tags */}
         <div className="flex flex-wrap gap-2 mb-6">
           {getArticleTags(article).map((tag) => (
             <Badge key={tag} variant="secondary">
@@ -118,7 +114,6 @@ export function ArticleView({
           ))}
         </div>
 
-        {/* Cover Image */}
         {article.cover_image && (
           <div className="relative aspect-video rounded-lg overflow-hidden mb-6">
             <Image
@@ -126,13 +121,12 @@ export function ArticleView({
               alt={article.title}
               fill
               className="object-cover"
-              priority // Carrega a imagem com prioridade para LCP
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px" // Otimização de tamanhos responsivos
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
             />
           </div>
         )}
 
-        {/* Actions */}
         <div className="flex items-center justify-between py-4 border-y">
           <div className="flex items-center gap-6">
             <Button variant="ghost" size="sm" className="gap-2">
@@ -159,15 +153,9 @@ export function ArticleView({
         </div>
       </header>
 
-      {/* Content */}
-      <div
-        className="prose prose-lg max-w-none mb-12"
-        dangerouslySetInnerHTML={{ __html: article.body_html }}
-      />
+      <MarkdownRenderer markdown={article.body_markdown} />
 
       <Separator className="my-8" />
-
-      {/* Comments */}
       <CommentSection articleId={articleId} comments={comments || []} />
     </article>
   );
