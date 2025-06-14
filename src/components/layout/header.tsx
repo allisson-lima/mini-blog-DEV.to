@@ -126,9 +126,8 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* New Post Button - Apenas para usuários logados */}
           {isAuthenticated && (
-            <Link href="/admin/new">
+            <Link href="/account/new">
               <Button size="sm" className="gap-2">
                 <PenTool className="h-4 w-4" />
                 Novo Post
@@ -136,7 +135,6 @@ export function Header() {
             </Link>
           )}
 
-          {/* User Menu ou Login Button */}
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -171,7 +169,7 @@ export function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/admin" className="cursor-pointer flex w-full">
+                  <Link href="/account" className="cursor-pointer flex w-full">
                     <User className="mr-2 h-4 w-4" />
                     <span>Minha Conta</span>
                   </Link>

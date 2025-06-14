@@ -1,17 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   verifyRefreshToken,
   getUserById,
   generateAccessToken,
   generateRefreshToken,
-  setAuthCookies,
 } from '@/lib/auth';
-import { cookies } from 'next/headers';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const refreshToken = cookieStore.get('refresh-token')?.value;
+    const refreshToken = request.cookies.get('refresh-token')?.value;
 
     if (!refreshToken) {
       return NextResponse.json(
@@ -39,9 +36,7 @@ export async function POST() {
     const newAccessToken = await generateAccessToken(user);
     const newRefreshToken = await generateRefreshToken(user.id);
 
-    setAuthCookies(newAccessToken, newRefreshToken);
-
-    return NextResponse.json({
+    const res = NextResponse.json({
       user: {
         id: user.id,
         name: user.name,
@@ -51,6 +46,26 @@ export async function POST() {
         role: user.role,
       },
     });
+
+    const isProd = process.env.NODE_ENV === 'production';
+
+    res.cookies.set('access-token', newAccessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 15 * 60,
+      path: '/',
+    });
+
+    res.cookies.set('refresh-token', newRefreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60,
+      path: '/',
+    });
+
+    return res;
   } catch (error) {
     console.error('Erro no refresh:', error);
     return NextResponse.json(

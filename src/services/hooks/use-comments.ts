@@ -4,10 +4,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Comment } from '@/types/article';
 import { useBlogStore } from '@/stores/blog-store';
 import { toast } from 'sonner';
-import { api } from '../api';
+import { api_dev } from '../api.dev.to';
 
 const fetchComments = async (articleId: string): Promise<Comment[]> => {
-  const response = await api.get<Comment[]>(`/comments?a_id=${articleId}`);
+  const response = await api_dev.get<Comment[]>(`/comments?a_id=${articleId}`);
   return response.data;
 };
 

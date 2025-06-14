@@ -10,8 +10,8 @@ import { useBlogStore } from '@/stores/blog-store';
 import { toast } from 'sonner';
 import { queryClient } from '@/lib/query-client-react-query';
 import { getArticleTags } from '@/utils/get-article-normalize';
+import { api_dev } from '../api.dev.to';
 import { api } from '../api';
-import axios from 'axios';
 
 const normalizeArticle = (article: Article): Article => {
   return {
@@ -37,7 +37,7 @@ const fetchArticles = async (
   };
 
   try {
-    const response = await api.get<Article[]>('/articles', config);
+    const response = await api_dev.get<Article[]>('/articles', config);
     return response.data.map(normalizeArticle);
   } catch (error) {
     console.error('Erro ao buscar artigos:', error);
@@ -64,7 +64,7 @@ const fetchArticlesInfinite = async ({
   };
 
   try {
-    const response = await api.get<Article[]>('/articles', config);
+    const response = await api_dev.get<Article[]>('/articles', config);
     const articles = response.data.map(normalizeArticle);
 
     const hasMore = articles.length === 20;
@@ -82,7 +82,7 @@ const fetchArticlesInfinite = async ({
 
 const fetchArticleById = async (id: string): Promise<Article> => {
   try {
-    const response = await api.get<Article>(`/articles/${id}`);
+    const response = await api_dev.get<Article>(`/articles/${id}`);
     return normalizeArticle(response.data);
   } catch (error) {
     console.error('Erro ao buscar artigo:', error);
@@ -158,7 +158,7 @@ export const useArticle = (id: string) => {
 export const useCreateArticle = () => {
   return useMutation<Article, Error, CreateArticlePayload>({
     mutationFn: async (payload) => {
-      const response = await axios.post<Article>('/api/articles', payload);
+      const response = await api.post<Article>('/api/articles', payload);
       return response.data;
     },
     onSuccess: () => {
