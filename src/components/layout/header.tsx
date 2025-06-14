@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import Link from 'next/link';
@@ -24,22 +25,37 @@ import {
   Moon,
   Sun,
   Laptop,
+  LogIn,
 } from 'lucide-react';
 import { useBlogStore } from '@/stores/blog-store';
-import { useUserStore } from '@/stores/user-store';
 import { useTheme } from 'next-themes';
+import { useAuthStore } from '@/stores/auth-store';
+import { toast } from 'sonner';
 
 export function Header() {
   const pathname = usePathname();
-  const { searchQuery, selectedTags, clearFilters } = useBlogStore();
-  const { user, isLoggedIn, logout } = useUserStore();
+  const { selectedTags } = useBlogStore();
   const { theme, setTheme } = useTheme();
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const navItems = [
     { href: '/', label: 'Posts', icon: BookOpen },
-    { href: '/drafts', label: 'Rascunhos', icon: PenTool },
-    { href: '/tags', label: 'Tags', icon: Tag },
+    ...(isAuthenticated
+      ? [
+          { href: '/drafts', label: 'Rascunhos', icon: PenTool },
+          { href: '/tags', label: 'Tags', icon: Tag },
+        ]
+      : []),
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success('Logout realizado com sucesso!');
+    } catch (error: any) {
+      toast.error('Erro ao fazer logout');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,23 +88,6 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Buscar posts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-10"
-            />
-          </div> */}
-
-          {(selectedTags.length > 0 || searchQuery) && (
-            <Button variant="outline" size="sm" onClick={clearFilters}>
-              Limpar filtros
-            </Button>
-          )}
-
-          {/* Theme Selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" className="rounded-full">
@@ -127,16 +126,18 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* New Post Button */}
-          <Link href="/admin/new" className="hidden md:flex">
-            <Button size="sm" className="gap-2">
-              <PenTool className="h-4 w-4" />
-              Novo Post
-            </Button>
-          </Link>
+          {/* New Post Button - Apenas para usuários logados */}
+          {isAuthenticated && (
+            <Link href="/admin/new">
+              <Button size="sm" className="gap-2">
+                <PenTool className="h-4 w-4" />
+                Novo Post
+              </Button>
+            </Link>
+          )}
 
-          {/* User Menu */}
-          {isLoggedIn && user ? (
+          {/* User Menu ou Login Button */}
+          {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -161,6 +162,11 @@ export function Header() {
                     <p className="text-xs leading-none text-muted-foreground">
                       @{user.username}
                     </p>
+                    {user.role === 'admin' && (
+                      <p className="text-xs leading-none text-primary font-medium">
+                        Administrador
+                      </p>
+                    )}
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -173,7 +179,7 @@ export function Header() {
                 <DropdownMenuItem asChild>
                   <Link href="/drafts" className="cursor-pointer flex w-full">
                     <FileText className="mr-2 h-4 w-4" />
-                    <span>Meus Posts</span>
+                    <span>Meus Rascunhos</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -187,7 +193,7 @@ export function Header() {
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="cursor-pointer text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
@@ -198,7 +204,7 @@ export function Header() {
           ) : (
             <Button variant="outline" size="sm" asChild>
               <Link href="/login">
-                <User className="mr-2 h-4 w-4" />
+                <LogIn className="mr-2 h-4 w-4" />
                 Entrar
               </Link>
             </Button>
