@@ -1,3 +1,4 @@
+import { api } from '@/services/api';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -40,20 +41,11 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true });
 
-          const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
+          const { data } = await api.post('/api/auth/login', {
+            email,
+            password,
           });
 
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Erro no login');
-          }
-
-          const data = await response.json();
           set({
             user: data.user,
             isAuthenticated: true,
@@ -67,43 +59,21 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          await fetch('/api/auth/logout', {
-            method: 'POST',
-          });
-
-          set({
-            user: null,
-            isAuthenticated: false,
-          });
+          await api.post('/api/auth/logout');
         } catch (error) {
           console.error('Erro no logout:', error);
-          // Mesmo com erro, limpa o estado local
-          set({
-            user: null,
-            isAuthenticated: false,
-          });
+        } finally {
+          set({ user: null, isAuthenticated: false });
         }
       },
 
       refreshAuth: async () => {
         try {
-          const response = await fetch('/api/auth/refresh', {
-            method: 'POST',
+          const { data } = await api.post('/api/auth/refresh');
+          set({
+            user: data.user,
+            isAuthenticated: true,
           });
-
-          if (response.ok) {
-            const data = await response.json();
-            set({
-              user: data.user,
-              isAuthenticated: true,
-            });
-          } else {
-            // Se o refresh falhar, desloga o usuário
-            set({
-              user: null,
-              isAuthenticated: false,
-            });
-          }
         } catch (error) {
           console.error('Erro no refresh:', error);
           set({

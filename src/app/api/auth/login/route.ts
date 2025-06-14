@@ -3,7 +3,6 @@ import {
   validateCredentials,
   generateAccessToken,
   generateRefreshToken,
-  setAuthCookies,
 } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -28,9 +27,7 @@ export async function POST(request: NextRequest) {
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user.id);
 
-    setAuthCookies(accessToken, refreshToken);
-
-    return NextResponse.json({
+    const res = NextResponse.json({
       user: {
         id: user.id,
         name: user.name,
@@ -40,6 +37,26 @@ export async function POST(request: NextRequest) {
         role: user.role,
       },
     });
+
+    const isProd = process.env.NODE_ENV === 'production';
+
+    res.cookies.set('access-token', accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 15 * 60,
+      path: '/',
+    });
+
+    res.cookies.set('refresh-token', refreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60,
+      path: '/',
+    });
+
+    return res;
   } catch (error) {
     console.error('Erro no login:', error);
     return NextResponse.json(
