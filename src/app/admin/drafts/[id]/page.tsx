@@ -10,9 +10,9 @@ export default async function EditDraftPage({ params }: EditDraftPageProps) {
   const { id } = await params;
   return (
     <div className="bg-background min-h-screen">
-      <main className="container py-8">
+      <div className="container py-8">
         <PostEditor draftId={id} />
-      </main>
+      </div>
     </div>
   );
 }
