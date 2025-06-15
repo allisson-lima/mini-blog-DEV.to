@@ -50,15 +50,13 @@ export async function POST(request: NextRequest) {
     const isProd = process.env.NODE_ENV === 'production';
 
     res.cookies.set('access-token', newAccessToken, {
-      httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
-      maxAge: 15 * 60,
+      maxAge: 1 * 60,
       path: '/',
     });
 
     res.cookies.set('refresh-token', newRefreshToken, {
-      httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
