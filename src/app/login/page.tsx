@@ -89,7 +89,11 @@ export default function LoginPage() {
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>
+                {error === 'Request failed with status code 401'
+                  ? 'Credenciais inválidas'
+                  : error}
+              </AlertDescription>
             </Alert>
           )}
 
@@ -134,6 +138,7 @@ export default function LoginPage() {
                   aria-label={isVisible ? 'Hide password' : 'Show password'}
                   aria-pressed={isVisible}
                   aria-controls="password"
+                  id="button-view-password"
                 >
                   {isVisible ? (
                     <EyeOffIcon size={16} aria-hidden="true" />
