@@ -18,8 +18,10 @@ interface AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshAuth: () => Promise<void>;
+  session: () => Promise<User>;
   setUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
+  setIsAuthenticated: (isAuthenticated: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -35,6 +37,10 @@ export const useAuthStore = create<AuthState>()(
 
       setLoading: (loading) => {
         set({ isLoading: loading });
+      },
+
+      setIsAuthenticated: (isAuthenticated) => {
+        set({ isAuthenticated });
       },
 
       login: async (email: string, password: string) => {
@@ -83,6 +89,26 @@ export const useAuthStore = create<AuthState>()(
             user: null,
             isAuthenticated: false,
           });
+        }
+      },
+
+      session: async () => {
+        try {
+          set({ isLoading: true });
+          const { data } = await api.get('/api/session');
+          set({
+            user: data.user,
+            isAuthenticated: true,
+          });
+          return data.user;
+        } catch (error) {
+          set({
+            user: null,
+            isAuthenticated: false,
+          });
+          throw error;
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),
