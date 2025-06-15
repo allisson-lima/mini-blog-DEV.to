@@ -7,6 +7,7 @@ import { User } from '@/stores/auth-store';
 
 export function useCurrentUser() {
   const setUser = useAuthStore((state) => state.setUser);
+
   const setLoading = useAuthStore((state) => state.setLoading);
 
   return useQuery({

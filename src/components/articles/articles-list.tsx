@@ -123,8 +123,8 @@ export function ArticlesList() {
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredArticles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
+            {filteredArticles.map((article, index: number) => (
+              <ArticleCard key={`${article.id}-${index}`} article={article} />
             ))}
           </div>
 

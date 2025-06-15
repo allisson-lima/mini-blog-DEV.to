@@ -3,8 +3,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -30,13 +30,36 @@ import {
 import { useTheme } from 'next-themes';
 import { useAuthStore } from '@/stores/auth-store';
 import { toast } from 'sonner';
-import { useCurrentUser } from '@/services/hooks/use-session';
+import Cookies from 'js-cookie';
 
 export function Header() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const { isAuthenticated, logout } = useAuthStore();
-  const { data: user } = useCurrentUser();
+  const { user, isAuthenticated, setIsAuthenticated, session, logout } =
+    useAuthStore();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const token = Cookies.get('access-token');
+      const refresh = Cookies.get('refresh-token');
+
+      if (token) {
+        try {
+          await session();
+        } catch (error) {
+          console.error('Erro ao consultar a sessão:', error);
+        }
+      } else {
+        if (refresh) {
+          await session();
+          return;
+        }
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkSession();
+  }, [isAuthenticated]);
 
   const navItems = [
     { href: '/', label: 'Posts', icon: BookOpen },
