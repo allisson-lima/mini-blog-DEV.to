@@ -7,12 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Search, Tag, TrendingUp } from 'lucide-react';
 import { getArticleTags } from '@/utils/get-article-normalize';
 
 export function TagsManager() {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: articles } = useArticles({
+  const { data: articles, isLoading } = useArticles({
     per_page: 500,
   });
   const { selectedTags, toggleTag } = useBlogStore();
@@ -72,24 +73,34 @@ export function TagsManager() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {filteredTags.map(({ tag, count }) => (
-                  <Badge
-                    key={tag}
-                    variant={
-                      selectedTags.includes(tag) ? 'default' : 'secondary'
-                    }
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
-                    onClick={() => toggleTag(tag)}
-                  >
-                    #{tag} ({count})
-                  </Badge>
-                ))}
-              </div>
-              {filteredTags.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
-                  Nenhuma tag encontrada
-                </p>
+              {isLoading ? (
+                <div className="flex flex-wrap gap-2">
+                  {Array.from({ length: 20 }).map((_, i) => (
+                    <Skeleton key={i} className="h-6 w-24 rounded-full" />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-wrap gap-2">
+                    {filteredTags.map(({ tag, count }) => (
+                      <Badge
+                        key={tag}
+                        variant={
+                          selectedTags.includes(tag) ? 'default' : 'secondary'
+                        }
+                        className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
+                        onClick={() => toggleTag(tag)}
+                      >
+                        #{tag} ({count})
+                      </Badge>
+                    ))}
+                  </div>
+                  {filteredTags.length === 0 && (
+                    <p className="text-center text-muted-foreground py-8">
+                      Nenhuma tag encontrada
+                    </p>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
@@ -104,31 +115,39 @@ export function TagsManager() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {popularTags.map(({ tag, count }, index) => (
-                  <div
-                    key={tag}
-                    className="flex items-center justify-between p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors"
-                    onClick={() => toggleTag(tag)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        #{index + 1}
+              {isLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <Skeleton key={i} className="h-8 w-full rounded-lg" />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {popularTags.map(({ tag, count }, index) => (
+                    <div
+                      key={tag}
+                      className="flex items-center justify-between p-2 rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                      onClick={() => toggleTag(tag)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-muted-foreground">
+                          #{index + 1}
+                        </span>
+                        <Badge
+                          variant={
+                            selectedTags.includes(tag) ? 'default' : 'outline'
+                          }
+                        >
+                          #{tag}
+                        </Badge>
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {count} posts
                       </span>
-                      <Badge
-                        variant={
-                          selectedTags.includes(tag) ? 'default' : 'outline'
-                        }
-                      >
-                        #{tag}
-                      </Badge>
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {count} posts
-                    </span>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
