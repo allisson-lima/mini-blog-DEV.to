@@ -196,7 +196,10 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/drafts" className="cursor-pointer flex w-full">
+                  <Link
+                    href="/account/drafts"
+                    className="cursor-pointer flex w-full"
+                  >
                     <FileText className="mr-2 h-4 w-4" />
                     <span>Meus Rascunhos</span>
                   </Link>
