@@ -14,7 +14,8 @@
     "prettier:check": "prettier --check \"**/*.{ts,tsx,json}\"",
     "pre-push": "npm run prettier:check && npm run build",
     "pre-commit": "lint-staged",
-    "test": "jest"
+    "test": "jest",
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

@@ -107,8 +107,24 @@ export const useArticles = (params?: ArticlesQueryParams) => {
         setArticlesLoading(false);
       }
     },
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 };
+
+/**
+ * Hook para gerenciar artigos com paginação infinita
+ *
+ * @param queryParams - Parâmetros de filtro da query
+ * @returns Query object com dados paginados e funções de controle
+ *
+ * @example
+ * ```tsx
+ * const { data, fetchNextPage, hasNextPage } = useInfiniteArticles({
+ *   tag: 'javascript',
+ *   per_page: 20
+ * })
+ * ```
+ */
 
 export const useInfiniteArticles = (
   queryParams?: Omit<ArticlesQueryParams, 'page'>,
