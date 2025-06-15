@@ -1,10 +1,22 @@
-import { AdminDashboard } from '@/components/admin/admin-dashboard';
+'use client';
 
-export default function AdminPage() {
+import dynamic from 'next/dynamic';
+
+const AccountDashboard = dynamic(
+  () =>
+    import('@/components/account/account-dashboard').then(
+      (mod) => mod.AccountDashboard,
+    ),
+  {
+    ssr: false,
+  },
+);
+
+export default function AccountPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-8">
-        <AdminDashboard />
+        <AccountDashboard />
       </div>
     </div>
   );
