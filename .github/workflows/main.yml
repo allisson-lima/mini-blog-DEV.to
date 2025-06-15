@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    name: Lint, Prettier, Build, Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Verificar lint
+        run: npm run lint
+
+      - name: Verificar formatação (Prettier)
+        run: npm run prettier:check
+
+      - name: Rodar build
+        run: npm run build
+
+      - name: Rodar testes
+        run: npm run test
