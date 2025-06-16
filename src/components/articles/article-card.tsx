@@ -19,15 +19,18 @@ import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useBlogStore } from '@/stores/blog-store';
 import { getArticleTags } from '@/utils/get-article-normalize';
+import { BlurFade } from '../blur-fade';
 
 interface ArticleCardProps {
   article: Article;
   variant?: 'default' | 'compact';
+  indice_fade?: number;
 }
 
 export function ArticleCard({
   article,
   variant = 'default',
+  indice_fade,
 }: ArticleCardProps) {
   const { toggleTag } = useBlogStore();
 
@@ -59,21 +62,30 @@ export function ArticleCard({
         </div>
 
         {article.cover_image && variant === 'default' && (
-          <div className="relative aspect-video rounded-lg overflow-hidden">
-            <Image
-              src={article.cover_image || '/placeholder.svg'}
-              alt={article.title}
-              fill
-              priority
-              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+          <div className="relative aspect-video rounded-lg overflow-hidden bg-accent">
+            <BlurFade delay={indice_fade ? 0.1 + indice_fade * 0.01 : 0} inView>
+              <div className="relative aspect-video rounded-lg overflow-hidden">
+                <Image
+                  src={article.cover_image || '/placeholder.svg'}
+                  alt={article.title}
+                  fill
+                  priority
+                  placeholder="blur"
+                  blurDataURL="/placeholder.svg"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+            </BlurFade>
           </div>
         )}
       </CardHeader>
 
       <CardContent className="pb-3 flex-1">
-        <Link href={`/posts/${article.id}`} className="block group">
+        <Link
+          href={`/posts/${article.user.username}/${article.slug}`}
+          className="block group"
+        >
           <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {article.title}
           </h3>

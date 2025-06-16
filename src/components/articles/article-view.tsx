@@ -20,10 +20,10 @@ import Image from 'next/image';
 import type { Article } from '@/types/article';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { useArticle } from '@/services/hooks/articles/use-articles';
 import { useComments } from '@/services/hooks/use-comments';
 import { getArticleTags } from '@/utils/get-article-normalize';
 import { MarkdownRenderer } from '../markdown-renderer';
+import { BlurFade } from '../blur-fade';
 
 interface ArticleViewProps {
   articleId: string;
@@ -34,16 +34,15 @@ export function ArticleView({
   articleId,
   article: initialArticle,
 }: ArticleViewProps) {
-  const { data: clientArticle } = useArticle(articleId);
   const { data: comments } = useComments(articleId);
   const [article, setArticle] = useState<Article | undefined>(initialArticle);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (clientArticle) {
-      setArticle(clientArticle);
+    if (initialArticle) {
+      setArticle(initialArticle);
     }
-  }, [clientArticle]);
+  }, [initialArticle]);
 
   const handleShare = async () => {
     const shareData = {
@@ -115,15 +114,19 @@ export function ArticleView({
         </div>
 
         {article.cover_image && (
-          <div className="relative aspect-video rounded-lg overflow-hidden mb-6">
-            <Image
-              src={article.cover_image || '/placeholder.svg'}
-              alt={article.title}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-            />
+          <div className="relative aspect-video rounded-lg overflow-hidden bg-accent">
+            <BlurFade inView>
+              <div className="relative aspect-video rounded-lg overflow-hidden mb-6">
+                <Image
+                  src={article.cover_image || '/placeholder.svg'}
+                  alt={article.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                />
+              </div>
+            </BlurFade>
           </div>
         )}
 
