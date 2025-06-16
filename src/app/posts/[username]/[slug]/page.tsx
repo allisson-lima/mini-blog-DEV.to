@@ -1,18 +1,18 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ArticleView } from '@/components/articles/article-view';
-import { ErrorBoundary } from '@/components/common/error-boundary';
-import { getArticleById } from '@/lib/articles';
+import { getArticleBySlug } from '@/lib/articles';
+import { ScrollProgress } from '@/components/scroll-progress';
 
 interface PostPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ username: string; slug: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: PostPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const article = await getArticleById(id);
+  const { username, slug } = await params;
+  const article = await getArticleBySlug(username, slug);
 
   if (!article) {
     return {
@@ -28,7 +28,7 @@ export async function generateMetadata({
 
   const canonicalUrl =
     article.canonical_url ||
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'https://devblog.com'}/posts/${id}`;
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'https://devblog.com'}/${article.user.username}/${article.slug}`;
 
   const imageUrl =
     article.cover_image ||
@@ -86,8 +86,8 @@ export async function generateMetadata({
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const { id } = await params;
-  const article = await getArticleById(id);
+  const { username, slug } = await params;
+  const article = await getArticleBySlug(username, slug);
 
   if (!article) {
     notFound();
@@ -118,21 +118,20 @@ export default async function PostPage({ params }: PostPageProps) {
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `${process.env.NEXT_PUBLIC_BASE_URL || 'https://devblog.com'}/posts/${id}`,
+      '@id': `${process.env.NEXT_PUBLIC_BASE_URL || 'https://devblog.com'}/${article.user.username}/${article.slug}`,
     },
   };
 
   return (
     <div className="bg-background min-h-screen">
+      <ScrollProgress className="top-[0px]" />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
       <div className="container py-8">
-        <ErrorBoundary>
-          <ArticleView article={article} articleId={id} />
-        </ErrorBoundary>
+        <ArticleView article={article} articleId={article.id.toString()} />
       </div>
     </div>
   );

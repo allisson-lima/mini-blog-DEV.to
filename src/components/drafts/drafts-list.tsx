@@ -22,7 +22,7 @@ export function DraftsList() {
           Comece a escrever um novo post e salve como rascunho para continuar
           mais tarde.
         </p>
-        <Link href="/admin/new">
+        <Link href="/account/post/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             Criar novo post
@@ -36,7 +36,7 @@ export function DraftsList() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Meus Rascunhos ({drafts.length})</h1>
-        <Link href="/admin/new">
+        <Link href="/account/post/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             Novo post

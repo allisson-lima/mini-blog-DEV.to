@@ -7,7 +7,7 @@ import { FileX, Home, ArrowLeft } from 'lucide-react';
 export default function EditPostNotFound() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="container py-8">
+      <div className="container py-8">
         <div className="max-w-2xl mx-auto text-center py-12">
           <div className="flex justify-center mb-6">
             <div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center">
@@ -37,7 +37,7 @@ export default function EditPostNotFound() {
             </Button>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

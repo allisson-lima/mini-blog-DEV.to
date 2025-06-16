@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use server';
 
+import { MOCK_USERS } from '@/mocks/user.auth';
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 
@@ -120,25 +121,6 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 }
 
-const MOCK_USERS: User[] = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
-    username: 'johndoe',
-    avatar: '/placeholder.svg?height=40&width=40',
-    role: 'admin',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    username: 'janesmith',
-    avatar: '/placeholder.svg?height=40&width=40',
-    role: 'user',
-  },
-];
-
 export async function getUserById(id: string): Promise<User | null> {
   return MOCK_USERS.find((user) => user.id === id) || null;
 }
@@ -152,7 +134,7 @@ export async function validateCredentials(
   password: string,
 ): Promise<User | null> {
   const user = await getUserByEmail(email);
-  if (user && password === '123456') {
+  if (user && password === 'Teste@123') {
     return user;
   }
   return null;
