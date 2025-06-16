@@ -5,6 +5,7 @@ import { Providers } from '@/providers';
 import { Toaster } from '@/components/ui/sonner';
 import { Layout } from '@/components/layout';
 import { WebVitals } from '@/components/web-vitals';
+import { ReactScanScript } from '@/components/react-scan';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,6 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <ReactScanScript />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
