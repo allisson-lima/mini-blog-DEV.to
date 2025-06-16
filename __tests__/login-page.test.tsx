@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import LoginPage from '@/app/login/page';
+import LoginPage from '@/app/(auth)/login/page';
+import { MOCK_USERS } from '@/mocks/user.auth';
 
 const mockPush = jest.fn();
 const mockLogin = jest.fn();
@@ -55,7 +56,7 @@ describe('LoginPage', () => {
 
       const allMatches = screen.getAllByText(
         (_, element) =>
-          element?.textContent === 'Usuário: jane@example.com / 123456',
+          element?.textContent === `Usuário: ${MOCK_USERS[1].email}/ Teste@123`,
       );
 
       expect(allMatches.length).toBeGreaterThan(0);

@@ -217,7 +217,7 @@ export function AdminDashboard() {
             </div>
           </div>
         </div>
-        <Link href="/account/new">
+        <Link href="/account/post/new">
           <Button size="lg" className="gap-2">
             <Plus className="h-5 w-5" />
             Criar Novo Post
@@ -437,7 +437,7 @@ export function AdminDashboard() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/posts/${article.id}`}
+                          href={`/posts/${article.user.username}/${article.slug}`}
                           className="flex items-center gap-2"
                         >
                           <Eye className="h-4 w-4" />
@@ -487,7 +487,7 @@ export function AdminDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Comece criando seu primeiro post!
                 </p>
-                <Link href="/admin/new">
+                <Link href="/account/post/new">
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
                     Criar Primeiro Post

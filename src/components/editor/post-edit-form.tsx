@@ -19,7 +19,6 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Save,
   Eye,
@@ -33,7 +32,6 @@ import {
   createArticleSchema,
   type CreateArticleFormData,
 } from '@/schemas/article-schema';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import {
@@ -41,20 +39,15 @@ import {
   useUpdateArticle,
 } from '@/services/hooks/articles/use-edit-article';
 import { getArticleTags } from '@/utils/get-article-normalize';
-import { useAccountArticles } from '@/services/hooks/articles/use-articles-me';
+import { Article } from '@/types/article';
 
 interface PostEditFormProps {
-  articleId: string;
+  article: Article;
 }
 
-export function PostEditForm({ articleId }: PostEditFormProps) {
+export function PostEditForm({ article }: PostEditFormProps) {
   const router = useRouter();
-  // Trecho comentado devido alguns bugs ao buscar o id do artigo existente e api retornar 404
-  // const { data: article, isLoading, error } = useArticleForEdit(articleId);
-  const { data: articles, isLoading, error } = useAccountArticles();
-  const article = articles?.articles.find(
-    (item) => item.id === Number(articleId),
-  );
+
   const updateArticleMutation = useUpdateArticle();
   const [tagInput, setTagInput] = useState('');
   const [preview, setPreview] = useState(false);
@@ -130,7 +123,7 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
 
     try {
       await updateArticleMutation.mutateAsync({
-        articleId,
+        articleId: article.id.toString(),
         data: {
           article: {
             title: values.title,
@@ -154,7 +147,7 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
   const onSubmit = async (data: CreateArticleFormData) => {
     try {
       await updateArticleMutation.mutateAsync({
-        articleId,
+        articleId: article.id.toString(),
         data: {
           article: {
             title: data.title,
@@ -170,62 +163,15 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
       });
 
       setHasUnsavedChanges(false);
-      router.push(data.published ? `/posts/${articleId}` : '/drafts');
+      router.push(
+        data.published
+          ? `/posts/${article.user.username}/${article.slug}`
+          : '/drafts',
+      );
     } catch (error) {
       console.error('Erro ao atualizar artigo:', error);
     }
   };
-
-  // Estados de loading e erro
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <div className="h-8 bg-muted rounded w-48 animate-pulse"></div>
-            <div className="h-4 bg-muted rounded w-64 animate-pulse"></div>
-          </div>
-          <div className="flex gap-2">
-            <div className="h-10 w-32 bg-muted rounded animate-pulse"></div>
-            <div className="h-10 w-24 bg-muted rounded animate-pulse"></div>
-          </div>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <div className="h-96 bg-muted rounded-lg animate-pulse"></div>
-          </div>
-          <div className="space-y-4">
-            <div className="h-48 bg-muted rounded-lg animate-pulse"></div>
-            <div className="h-32 bg-muted rounded-lg animate-pulse"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-4xl mx-auto">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            Erro ao carregar o artigo para edição. Verifique se o ID está
-            correto e tente novamente.
-          </AlertDescription>
-        </Alert>
-        <div className="mt-4">
-          <Button
-            variant="outline"
-            onClick={() => router.back()}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Voltar
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   if (!article) {
     return null;
@@ -233,7 +179,6 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
@@ -246,7 +191,10 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
               <ArrowLeft className="h-4 w-4" />
               Voltar
             </Button>
-            <Link href={`/posts/${articleId}`} target="_blank">
+            <Link
+              href={`/posts/${article.user.username}/${article.slug}`}
+              target="_blank"
+            >
               <Button variant="ghost" size="sm" className="gap-2">
                 <ExternalLink className="h-4 w-4" />
                 Ver Post
@@ -286,7 +234,6 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
         </div>
       </div>
 
-      {/* Formulário */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-3">
@@ -493,7 +440,7 @@ export function PostEditForm({ articleId }: PostEditFormProps) {
                   disabled={updateArticleMutation.isPending}
                 >
                   {updateArticleMutation.isPending ? (
-                    <LoadingSpinner size="sm" />
+                    <p>Salvando as alterações...</p>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />

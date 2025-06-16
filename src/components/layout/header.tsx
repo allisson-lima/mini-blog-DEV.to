@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,6 +34,7 @@ import Cookies from 'js-cookie';
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { user, isAuthenticated, setIsAuthenticated, session, logout } =
     useAuthStore();
@@ -72,6 +73,7 @@ export function Header() {
   const handleLogout = async () => {
     try {
       await logout();
+      router.replace('/');
       toast.success('Logout realizado com sucesso!');
     } catch (error: any) {
       toast.error('Erro ao fazer logout');
@@ -148,7 +150,7 @@ export function Header() {
           </DropdownMenu>
 
           {isAuthenticated && (
-            <Link href="/account/new">
+            <Link href="/account/post/new">
               <Button size="sm" className="gap-2">
                 <PenTool className="h-4 w-4" />
                 Novo Post

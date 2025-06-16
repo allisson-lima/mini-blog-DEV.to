@@ -190,7 +190,6 @@ export function AccountDashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header com perfil do usuário */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
@@ -217,7 +216,7 @@ export function AccountDashboard() {
             </div>
           </div>
         </div>
-        <Link href="/account/new">
+        <Link href="/account/post/new">
           <Button size="lg" className="gap-2">
             <Plus className="h-5 w-5" />
             Criar Novo Post
@@ -225,7 +224,6 @@ export function AccountDashboard() {
         </Link>
       </div>
 
-      {/* Cards de estatísticas melhorados */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card className="relative overflow-hidden">
           <div className="absolute top-0 right-0 w-20 h-20 bg-primary/10 rounded-full -translate-y-10 translate-x-10"></div>
@@ -318,7 +316,6 @@ export function AccountDashboard() {
         </Card>
       </div>
 
-      {/* Lista de artigos com paginação */}
       <Card>
         <CardHeader>
           <div className="flex md:flex-row flex-col items-center justify-between gap-1">
@@ -437,7 +434,7 @@ export function AccountDashboard() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/posts/${article.id}`}
+                          href={`/posts/${article.user.username}/${article.slug}`}
                           className="flex items-center gap-2"
                         >
                           <Eye className="h-4 w-4" />
@@ -446,7 +443,7 @@ export function AccountDashboard() {
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`/account/edit/${article.id}`}
+                          href={`/account/post/edit/${article.user.username}/${article.slug}`}
                           className="flex items-center gap-2"
                         >
                           <Edit className="h-4 w-4" />
@@ -487,7 +484,7 @@ export function AccountDashboard() {
                 <p className="text-muted-foreground mb-4">
                   Comece criando seu primeiro post!
                 </p>
-                <Link href="/admin/new">
+                <Link href="/account/post/new">
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
                     Criar Primeiro Post
@@ -543,7 +540,6 @@ export function AccountDashboard() {
         </CardContent>
       </Card>
 
-      {/* Gráficos */}
       <div className="grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader>

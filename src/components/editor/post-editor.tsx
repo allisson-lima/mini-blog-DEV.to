@@ -370,10 +370,16 @@ export function PostEditor({ draftId }: PostEditorProps) {
                   className="w-full gap-2"
                   disabled={createArticleMutation.isPending}
                 >
-                  <Send className="h-4 w-4" />
-                  {watch('published')
-                    ? 'Publicar Post'
-                    : 'Salvar como Rascunho'}
+                  {createArticleMutation.isPending ? (
+                    <p>Salvando o post...</p>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      {watch('published')
+                        ? 'Publicar Post'
+                        : 'Salvar como Rascunho'}
+                    </>
+                  )}
                 </Button>
 
                 <Button

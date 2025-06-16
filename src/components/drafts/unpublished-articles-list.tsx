@@ -148,7 +148,7 @@ export function UnpublishedArticlesList() {
             Gerencie seus artigos não publicados. Total: {total} rascunhos
           </p>
         </div>
-        <Link href="/account/new">
+        <Link href="/account/post/new">
           <Button className="gap-2">
             <Plus className="h-4 w-4" />
             Novo Rascunho
@@ -313,7 +313,7 @@ export function UnpublishedArticlesList() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild disabled>
                           <Link
-                            href={`/posts/${article.id}`}
+                            href={`/posts/${article.user.username}/${article.slug}`}
                             className="flex items-center gap-2"
                           >
                             <Eye className="h-4 w-4" />
@@ -392,7 +392,7 @@ export function UnpublishedArticlesList() {
                   Você não tem rascunhos no momento. Comece criando um novo
                   artigo!
                 </p>
-                <Link href="/account/new">
+                <Link href="/account/post/new">
                   <Button className="gap-2">
                     <Plus className="h-4 w-4" />
                     Criar Primeiro Rascunho

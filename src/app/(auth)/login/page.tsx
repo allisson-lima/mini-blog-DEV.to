@@ -21,6 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { BookOpen, AlertCircle, EyeOffIcon, EyeIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { MOCK_USERS } from '@/mocks/user.auth';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Email inválido' }),
@@ -42,8 +43,8 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: 'jane@example.com',
-      password: '123456',
+      email: MOCK_USERS[1].email,
+      password: 'Teste@123',
     },
   });
 
@@ -101,7 +102,7 @@ export default function LoginPage() {
             <p className="text-sm font-medium">Contas de teste:</p>
             <div className="text-xs space-y-1">
               <p>
-                <strong>Usuário:</strong> jane@example.com / 123456
+                <strong>Usuário:</strong> {MOCK_USERS[1].email}/ Teste@123
               </p>
             </div>
           </div>
