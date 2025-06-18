@@ -516,16 +516,27 @@ xl: 1280px  /* Desktop grande */
 
 ### **Testes de Responsividade**
 ```typescript
-// Cypress viewport testing
-describe('Responsive Design', () => {
-  ['iphone-6', 'ipad-2', [1920, 1080]].forEach((viewport) => {
-    it(`should work on ${viewport}`, () => {
-      cy.viewport(viewport)
-      cy.visit('/')
-      cy.get('[data-cy=header]').should('be.visible')
-    })
-  })
-})
+describe('Design Responsivo', () => {
+  const loginUrl = 'http://localhost:3000';
+  const viewports = ['iphone-6', 'ipad-2', [1920, 1080]];
+
+  beforeEach(() => {
+    cy.visit(loginUrl);
+  });
+
+  viewports.forEach((viewport) => {
+    it(`deveria funcionar bem em ${Array.isArray(viewport) ? `${viewport[0]}x${viewport[1]}` : viewport}`, () => {
+      if (typeof viewport === 'string') {
+        cy.viewport(viewport as Cypress.ViewportPreset);
+      } else {
+        cy.viewport(viewport[0], viewport[1]);
+      }
+
+      cy.get('#header-layout').should('be.visible');
+    });
+  });
+});
+
 ```
 
 ---
@@ -1295,6 +1306,35 @@ export default function Error({
     </div>
   );
 }
+```
+
+## 🛠 ReactScan Component
+
+Um componente utilitário que carrega automaticamente o [React Scan](https://github.com/pmndrs/react-scan) em ambiente de desenvolvimento. O React Scan é uma ferramenta de inspeção que ajuda a visualizar e depurar componentes React.
+
+```jsx
+'use client';
+
+import { useEffect } from 'react';
+
+export function ReactScan() {
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+
+    const script = document.createElement('script');
+    script.src = '//unpkg.com/react-scan/dist/auto.global.js';
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
+  return null;
+}
+
 ```
 ---
 
