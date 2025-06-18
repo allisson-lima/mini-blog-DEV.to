@@ -2,14 +2,17 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAccessToken } from '@/lib/auth';
+import axios from 'axios';
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, origin } = request.nextUrl;
+
   const accessToken = request.cookies.get('access-token')?.value;
+  const refreshToken = request.cookies.get('refresh-token')?.value;
 
   const isApiRoute = pathname.startsWith('/api');
 
-  const protectedApiRoutes = ['/api/articles'];
+  const protectedApiRoutes = ['/api/articles', '/api/auth/me', '/api/session'];
   const protectedAppRoutes = ['/admin', '/drafts', '/account'];
   const publicRoutes = ['/', '/posts', '/tags', '/login'];
   const adminRoutes = ['/admin'];
@@ -30,6 +33,26 @@ export async function middleware(request: NextRequest) {
 
   if (!isApiRoute && isPublicRoute && !isProtectedApp) {
     return NextResponse.next();
+  }
+
+  if (!accessToken && refreshToken && (isProtectedApp || isProtectedApi)) {
+    try {
+      await axios.post(
+        `${origin}/api/auth/refresh`,
+        {},
+        {
+          headers: {
+            Cookie: `refresh-token=${refreshToken}`,
+          },
+        },
+      );
+      return NextResponse.next();
+    } catch (error) {
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
+      loginUrl.searchParams.set('expired', 'true');
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   if (!accessToken && (isProtectedApp || isProtectedApi)) {
@@ -66,5 +89,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
