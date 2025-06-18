@@ -3,7 +3,13 @@
 
 import { useBlogStore } from '@/stores/blog-store';
 import { useAuthStore } from '@/stores/auth-store';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -62,6 +68,7 @@ import { toast } from 'sonner';
 import { useAccountArticles } from '@/services/hooks/articles/use-articles-me';
 import { getArticleTags } from '@/utils/get-article-normalize';
 import { formatNumber } from '@/utils/format-number';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '../ui/chart';
 
 const COLORS = [
   'hsl(var(--primary))',
@@ -549,26 +556,35 @@ export function AccountDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={stats.topTags}>
-                <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                <XAxis dataKey="tag" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--background))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Bar
-                  dataKey="count"
-                  fill="hsl(var(--primary))"
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <ChartContainer
+              config={{
+                count: {
+                  label: 'Quantidade',
+                  color: 'hsl(var(--primary))',
+                },
+              }}
+              className="h-[250px] w-full"
+            >
+              <ResponsiveContainer width="100%">
+                <BarChart data={stats.topTags}>
+                  <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                  <XAxis dataKey="tag" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar
+                    dataKey="count"
+                    fill="hsl(var(--primary))"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
+          <CardFooter className="text-sm text-muted-foreground">
+            Este gráfico exibe as tags com maior uso na plataforma. Ele ajuda a
+            identificar os temas mais relevantes entre os usuários, permitindo
+            análise de tendências de conteúdo.
+          </CardFooter>
         </Card>
 
         <Card>
@@ -579,35 +595,44 @@ export function AccountDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats.engagementData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stats.engagementData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value, name) => [
-                    formatNumber(Number(value)),
-                    name,
-                  ]}
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--background))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-4 space-y-2">
+            <ChartContainer
+              config={{
+                reacoes: {
+                  label: 'Reações',
+                  color: 'hsl(var(--chart-1))',
+                },
+                comentarios: {
+                  label: 'Comentários',
+                  color: 'hsl(var(--chart-2))',
+                },
+                visualizacoes: {
+                  label: 'Visualizações',
+                  color: 'hsl(var(--chart-3))',
+                },
+              }}
+            >
+              <ResponsiveContainer width="100%">
+                <PieChart>
+                  <Pie
+                    data={stats.engagementData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {stats.engagementData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+          <CardFooter className="flex-1">
+            <div className="mt-4 space-y-2 w-full">
               {stats.engagementData.map((item, index) => (
                 <div
                   key={index}
@@ -626,7 +651,7 @@ export function AccountDashboard() {
                 </div>
               ))}
             </div>
-          </CardContent>
+          </CardFooter>
         </Card>
       </div>
     </div>
