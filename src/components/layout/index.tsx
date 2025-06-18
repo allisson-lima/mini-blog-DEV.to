@@ -1,3 +1,4 @@
+import { Footer } from './footer';
 import { Header } from './header';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <div className="flex-1 container py-6 md:px-0 px-3 mx-auto">
         {children}
       </div>
+      <Footer />
     </div>
   );
 }
