@@ -4,6 +4,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { ProviderReactQuery } from './provider-react-query';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import { ThemeProvider } from './theme-provider';
+import { ReactScan } from './react-scan';
 
 interface IDataProvider {
   children: React.ReactNode;
@@ -18,6 +19,7 @@ export function Providers({ children }: IDataProvider) {
         enableSystem
         disableTransitionOnChange
       >
+        <ReactScan />
         <ProviderReactQuery>
           <NuqsAdapter>{children}</NuqsAdapter>
           <ProgressBar
