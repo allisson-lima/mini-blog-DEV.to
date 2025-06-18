@@ -17,7 +17,7 @@ describe('Login', () => {
     cy.contains('button', 'Registre-se').should('exist');
 
     cy.contains('Contas de teste:').should('exist');
-    cy.contains('Usuário: jane@example.com / 123456').should('exist');
+    cy.contains(`Usuário: allison@example.com/ Teste@123`).should('exist');
   });
 
   it('deve exibir mensagens de erro se o formulário estiver vazio', () => {
@@ -33,12 +33,12 @@ describe('Login', () => {
   });
 
   it('deve fazer login com credenciais válidas', () => {
-    cy.get('#email', { timeout: 200000 }).clear().type('jane@example.com', {
+    cy.get('#email', { timeout: 200000 }).clear().type('allison@example.com', {
       delay: 200,
     });
     cy.wait(200);
 
-    cy.get('#password', { timeout: 200000 }).clear().type('123456', {
+    cy.get('#password', { timeout: 200000 }).clear().type('Teste@123', {
       delay: 200,
     });
 
