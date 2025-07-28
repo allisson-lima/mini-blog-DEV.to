@@ -141,6 +141,15 @@ yarn install
 pnpm install
 ```
 
+### **2.1 Obtenha sua API Key do DEV.TO**
+
+1. Acesse sua conta no [DEV.TO](https://dev.to)
+2. Vá para **Settings** > **Account** > **DEV API Keys**
+3. Clique em **Generate API Key**
+4. Copie a chave gerada e use no arquivo `.env.local`
+
+> 💡 A API key é pessoal e não deve ser compartilhada ou commitada no repositório.
+
 ### **3. Configure as variáveis de ambiente**
 ```bash
 cp .env.example .env.local
