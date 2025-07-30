@@ -37,7 +37,7 @@
 
 ## 🎯 Sobre o Projeto
 
-Este projeto é uma **plataforma de mini blog/CMS** desenvolvida como parte do desafio técnico da **Aiva**. A aplicação consome a **DEV.to API** para fornecer uma experiência rica de criação, edição e gerenciamento de conteúdo.
+Este projeto é uma **plataforma de mini blog/CMS** desenvolvida como parte do desafio técnico. A aplicação consome a **DEV.to API** para fornecer uma experiência rica de criação, edição e gerenciamento de conteúdo.
 
 ### 🎪 Por que Next.js?
 
@@ -128,7 +128,7 @@ Escolhi **Next.js 15** pelos seguintes motivos:
 
 ### **1. Clone o repositório**
 ```bash
-git clone https://github.com/allisson-lima/mini-blog-aiva.git
+git clone https://github.com/allisson-lima/mini-blog-DEV.to.git
 cd mini-blog
 ```
 
@@ -1384,7 +1384,7 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 
 ## 👨‍💻 Autor
 
-**Desenvolvido com ❤️ para o desafio técnico da Aiva**
+**Desenvolvido com ❤️ para o desafio técnico**
 
 - **GitHub**: [@allisson-lima](https://github.com/allisson-lima)
 - **LinkedIn**: [Allisson Lima](https://www.linkedin.com/in/allisson-lima-3382121b6)
@@ -1394,7 +1394,7 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 
 ## 🙏 Agradecimentos
 
-- **Aiva** pela oportunidade do desafio técnico
+- **Teste** pela oportunidade do desafio técnico
 - **DEV.to** pela API pública e documentação
 - **Vercel** pela plataforma de deploy
 - **shadcn/ui** pelos componentes de alta qualidade
